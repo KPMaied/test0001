@@ -1,0 +1,8 @@
+0 General
+1 Organic
+2 Recycle - Plastic
+3 Recycle - Aluminium
+4 Recycle - Cardboard
+5 Recycle - Paper
+6 Hazardous - Battery
+7 Hazardous - Blub
