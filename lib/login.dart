@@ -59,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                       profile.password = password!;
                     },
                   ),
+                  /*
                   SizedBox(height: 15),
                   CheckboxListTile(
                     title: Text("Stay Logged In"),
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                       });
                     },
                     controlAffinity: ListTileControlAffinity.leading,
-                  ),
+                  ),*/
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -85,8 +86,8 @@ class _LoginPageState extends State<LoginPage> {
                                 .then((value) {
                               formkey.currentState!.reset();
                               if (stayLoggedIn) {
-                                FirebaseAuth.instance.setPersistence(
-                                    Persistence.LOCAL);
+                                FirebaseAuth.instance
+                                    .setPersistence(Persistence.LOCAL);
                               }
                               Navigator.pushReplacement(context,
                                   MaterialPageRoute(builder: (context) {
@@ -95,8 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           } on FirebaseAuthException catch (e) {
                             Fluttertoast.showToast(
-                                msg: e.message!,
-                                gravity: ToastGravity.CENTER);
+                                msg: e.message!, gravity: ToastGravity.CENTER);
                           }
                         }
                       },

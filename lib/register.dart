@@ -21,121 +21,138 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: firebase,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Scaffold(
-              appBar: AppBar(
-                  backgroundColor: Colors.black,
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    color: Colors.white,
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return LoginPage();
-                      }));
-                    },
-                  ),
-                  title: Text("Error")),
-              body: Center(
-                child: Text("${snapshot.error}"),
-              ),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-              appBar: AppBar(
+      future: firebase,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(
                 backgroundColor: Colors.black,
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    color: Colors.white,
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return LoginPage();
+                        },
+                      ),
+                    );
+                  },
+                ),
+                title: Text("Error")),
+            body: Center(
+              child: Text("${snapshot.error}"),
+            ),
+          );
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.black,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
                         return LoginPage();
-                      }));
-                    },
-                  ),
-                title: Text("Create Account"),
+                      },
+                    ),
+                  );
+                },
               ),
-              body: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Form(
-                    key: formkey,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Email"),
-                          TextFormField(
-                            validator: MultiValidator([
+              title: Text("Create Account"),
+            ),
+            body: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Form(
+                  key: formkey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Email"),
+                        TextFormField(
+                          validator: MultiValidator(
+                            [
                               RequiredValidator(
                                   errorText: "Please enter your email"),
                               EmailValidator(errorText: "Invalid email format")
-                            ]),
-                            onSaved: (String? email) {
-                              profile.email = email!;
-                            },
+                            ],
                           ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Text("Password"),
-                          TextFormField(
-                            validator: RequiredValidator(
-                                errorText: "Please enter your password"),
-                            obscureText: true,
-                            onSaved: (String? password) {
-                              profile.password = password!;
-                            },
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              child: Text("Create Account"),
-                              onPressed: () async {
-                                if (formkey.currentState!.validate()) {
-                                  formkey.currentState!.save();
-                                  try {
-                                    await FirebaseAuth.instance
-                                        .createUserWithEmailAndPassword(
-                                            email: profile.email,
-                                            password: profile.password)
-                                        .then((value) {
+                          onSaved: (String? email) {
+                            profile.email = email!;
+                          },
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text("Password"),
+                        TextFormField(
+                          validator: RequiredValidator(
+                              errorText: "Please enter your password"),
+                          obscureText: true,
+                          onSaved: (String? password) {
+                            profile.password = password!;
+                          },
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            child: Text("Create Account"),
+                            onPressed: () async {
+                              if (formkey.currentState!.validate()) {
+                                formkey.currentState!.save();
+                                try {
+                                  await FirebaseAuth.instance
+                                      .createUserWithEmailAndPassword(
+                                          email: profile.email,
+                                          password: profile.password)
+                                      .then(
+                                    (value) {
                                       formkey.currentState!.reset();
                                       Fluttertoast.showToast(
                                           msg:
                                               "User account created successfully",
                                           gravity: ToastGravity.CENTER);
-                                      Navigator.pushReplacement(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return LoginPage();
-                                      }));
-                                    });
-                                  } on FirebaseAuthException catch (e) {
-                                    Fluttertoast.showToast(
-                                        msg: e.message!,
-                                        gravity: ToastGravity.CENTER);
-                                  }
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return LoginPage();
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  Fluttertoast.showToast(
+                                      msg: e.message!,
+                                      gravity: ToastGravity.CENTER);
                                 }
-                              },
-                            ),
-                          )
-                        ],
-                      ),
+                              }
+                            },
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
               ),
-            );
-          }
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
             ),
           );
-        });
+        }
+        return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
   }
 }

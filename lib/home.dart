@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:application_project_1/ResultReport.dart';
+import 'package:application_project_1/edit_profile_page.dart';
 import 'package:application_project_1/login.dart';
 import 'package:application_project_1/history_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -68,6 +69,8 @@ class _HomeState extends State<Home> {
     }
 
     try {
+      var startPrediction = DateTime.now();
+
       isBusy = true;
       var prediction = await Tflite.runModelOnImage(
         path: image.path,
@@ -76,6 +79,10 @@ class _HomeState extends State<Home> {
         imageMean: 127.5,
         imageStd: 127.5,
       );
+
+      var endPrediction = DateTime.now();
+      var duration = endPrediction.difference(startPrediction);
+      var durationInMilliseconds = duration.inMilliseconds.toDouble();
 
       setState(() {
         _output = prediction!;
@@ -150,18 +157,28 @@ class _HomeState extends State<Home> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
-              if (value == 'report') {
+              if (value == 'history') {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return HistoryPage();
                 }));
+              } else if (value == 'profile') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return EditProfilePage();
+                }));
               } else if (value == 'logout') {
-                // Perform the log out operation
                 _logout();
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
-                value: 'report',
+                value: 'profile',
+                child: ListTile(
+                  leading: Icon(Icons.account_circle_outlined),
+                  title: Text('Profile'),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'history',
                 child: ListTile(
                   leading: Icon(Icons.article_outlined),
                   title: Text('History'),
