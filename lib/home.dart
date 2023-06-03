@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:application_project_1/ResultReport.dart';
 import 'package:application_project_1/login.dart';
-import 'package:application_project_1/report_page.dart';
+import 'package:application_project_1/history_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -152,7 +152,7 @@ class _HomeState extends State<Home> {
             onSelected: (value) {
               if (value == 'report') {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ReportPage();
+                  return HistoryPage();
                 }));
               } else if (value == 'logout') {
                 // Perform the log out operation
