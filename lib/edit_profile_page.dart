@@ -11,157 +11,127 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-  final _newEmailController = TextEditingController();
-  final _newPasswordController = TextEditingController();
-  late String _currentEmail;
-  late String _currentPassword;
+  String _email = '', _password = '';
 
-  @override
-  void initState() {
-    super.initState();
-    _currentEmail = FirebaseAuth.instance.currentUser?.email ?? '';
-    _currentPassword = '********'; // Replace this with the actual password
+  void _changeEmail() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Change Email'),
+          content: Form(
+            key: _formKey,
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: 'New Email',
+              ),
+              validator: MultiValidator([
+                RequiredValidator(errorText: 'Email is required'),
+                EmailValidator(errorText: 'Enter a valid email address'),
+              ]),
+              onChanged: (value) => _email = value,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('Change'),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  User? user = _auth.currentUser;
+                  if (user != null) {
+                    try {
+                      await user.updateEmail(_email);
+                      Fluttertoast.showToast(msg: "Email update successfully");
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    } catch (e) {
+                      Fluttertoast.showToast(msg: 'Failed to update email');
+                    }
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  @override
-  void dispose() {
-    _newEmailController.dispose();
-    _newPasswordController.dispose();
-    super.dispose();
+  void _changePassword() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Change Password'),
+          content: Form(
+            key: _formKey,
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: 'New Password',
+              ),
+              validator:
+                  RequiredValidator(errorText: "Please enter your password"),
+              onChanged: (value) => _password = value,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('Change'),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  User? user = _auth.currentUser;
+                  if (user != null) {
+                    try {
+                      await user.updatePassword(_password);
+                      Fluttertoast.showToast(
+                          msg: 'Password updated successfully');
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    } catch (e) {
+                      Fluttertoast.showToast(msg: 'Failed to update password');
+                    }
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    User? user = _auth.currentUser;
     return Scaffold(
       appBar: AppBar(
+        title: Text('Edit Profile'),
         backgroundColor: Colors.black,
-        title: Text("Edit Profile"),
       ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Email: $_currentEmail"),
-                  SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showEmailDialog();
-                    },
-                    child: Text("Change Email"),
-                  ),
-                  SizedBox(height: 30),
-                  Text("Password: $_currentPassword"),
-                  SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showPasswordDialog();
-                    },
-                    child: Text("Change Password"),
-                  ),
-                ],
-              ),
-            ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('Email: ${user?.email ?? "Email not available"}'),
+          ElevatedButton(
+            child: Text('Change Email'),
+            onPressed: _changeEmail,
           ),
-        ),
+          ElevatedButton(
+            child: Text('Change Password'),
+            onPressed: _changePassword,
+          ),
+        ],
       ),
     );
-  }
-
-  void _showEmailDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Change Email"),
-          content: TextFormField(
-            controller: _newEmailController,
-            validator: MultiValidator([
-              RequiredValidator(errorText: 'Please enter a new email'),
-              EmailValidator(errorText: 'Invalid email format'),
-            ]),
-            decoration: InputDecoration(
-              labelText: 'New Email',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  final newEmail = _newEmailController.text.trim();
-                  _changeEmail(newEmail);
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showPasswordDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Change Password"),
-          content: TextFormField(
-            controller: _newPasswordController,
-            obscureText: true,
-            validator: RequiredValidator(errorText: 'Please enter a new password'),
-            decoration: InputDecoration(
-              labelText: 'New Password',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  final newPassword = _newPasswordController.text.trim();
-                  _changePassword(newPassword);
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _changeEmail(String newEmail) {
-    // Implement your logic to change the email here
-    setState(() {
-      _currentEmail = newEmail;
-    });
-    Fluttertoast.showToast(msg: "Email changed successfully");
-  }
-
-  void _changePassword(String newPassword) {
-    // Implement your logic to change the password here
-    setState(() {
-      _currentPassword = newPassword;
-    });
-    Fluttertoast.showToast(msg: "Password changed successfully");
   }
 }

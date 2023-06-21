@@ -157,13 +157,13 @@ class _HomeState extends State<Home> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
-              if (value == 'history') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return HistoryPage();
-                }));
-              } else if (value == 'profile') {
+              if (value == 'profile') {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return EditProfilePage();
+                }));
+              } else if (value == 'history') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return HistoryPage();
                 }));
               } else if (value == 'logout') {
                 _logout();
