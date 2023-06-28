@@ -3,13 +3,13 @@ import 'package:application_project_1/ResultReport.dart';
 import 'package:application_project_1/edit_profile_page.dart';
 import 'package:application_project_1/login.dart';
 import 'package:application_project_1/history_page.dart';
+import 'package:application_project_1/result_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
-// import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -24,8 +24,10 @@ class _HomeState extends State<Home> {
   late List _output;
   final imagepicker = ImagePicker();
   final auth = FirebaseAuth.instance;
-  CollectionReference _usersCollection =
-      FirebaseFirestore.instance.collection("users");
+  bool isModelLoaded = false;
+  bool isBusy = false;
+  
+  
   void _logout() async {
     await FirebaseAuth.instance.signOut().then((value) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
@@ -34,14 +36,11 @@ class _HomeState extends State<Home> {
     });
   }
 
-  bool isModelLoaded = false;
-  bool isBusy = false;
 
   @override
   void initState() {
     super.initState();
     loadmodel();
-    // Provider.of<ReportProvider>(context, listen: false).initData();
   }
 
   loadmodel() async {
@@ -89,30 +88,13 @@ class _HomeState extends State<Home> {
         _loading = false;
       });
 
-      var uid = auth.currentUser!.uid;
-
-      var res_name =
-          _output != null ? _output[0]['label'].toString().substring(2) : '';
-
-      ResultReport result = ResultReport(
-        icRes: res_name,
-        date: DateTime.now(),
-      );
-
-      CollectionReference resultHistoryRef =
-          _usersCollection.doc(uid).collection('result_history');
-
-      DocumentReference newResultRef = resultHistoryRef.doc();
-
-      await newResultRef.set({
-        'icRes': result.icRes,
-        'date': result.date,
-      }); //เพิ่ม Data
-
-      // var provider = Provider.of<ReportProvider>(context, listen: false);
-      // provider.addResultReport(result);
-
-      print('Inference completed');
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ResultPage(
+                  image: _image!,
+                  output: _output,
+                  predictionDuration: durationInMilliseconds)));
     } catch (e) {
       print('Failed to run model: $e');
     } finally {
@@ -165,7 +147,13 @@ class _HomeState extends State<Home> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return HistoryPage();
                 }));
-              } else if (value == 'logout') {
+              } 
+              // else if (value == 'statistics') {
+              //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //     return StatisticsPage();
+              //   }));
+              // }
+              else if (value == 'logout') {
                 _logout();
               }
             },
@@ -184,6 +172,13 @@ class _HomeState extends State<Home> {
                   title: Text('History'),
                 ),
               ),
+              // const PopupMenuItem<String>(
+              //   value: 'statistics',
+              //   child: ListTile(
+              //     leading: Icon(Icons.analytics_outlined),
+              //     title: Text('Statistics'),
+              //   ),
+              // ),
               const PopupMenuItem<String>(
                 value: 'logout',
                 child: ListTile(
@@ -248,29 +243,29 @@ class _HomeState extends State<Home> {
               const SizedBox(
                 height: 10,
               ),
-              _loading != true
-                  ? Container(
-                      child: Column(
-                      children: [
-                        Container(
-                          height: 200,
-                          width: 200,
-                          child: Image.file(_image!),
-                        ),
-                        _output != null
-                            ? Text(
-                                (_output[0]['label']).toString().substring(2),
-                                style: GoogleFonts.questrial(fontSize: 18))
-                            : Text(''),
-                        _output != null
-                            ? Text(
-                                'Confidence: ' +
-                                    (_output[0]['confidence']).toString(),
-                                style: GoogleFonts.questrial(fontSize: 18))
-                            : Text('')
-                      ],
-                    ))
-                  : Container()
+              // _loading != true
+              //     ? Container(
+              //         child: Column(
+              //         children: [
+              //           Container(
+              //             height: 200,
+              //             width: 200,
+              //             child: Image.file(_image!),
+              //           ),
+              //           _output != null
+              //               ? Text(
+              //                   (_output[0]['label']).toString().substring(2),
+              //                   style: GoogleFonts.questrial(fontSize: 18))
+              //               : Text(''),
+              //           _output != null
+              //               ? Text(
+              //                   'Confidence: ' +
+              //                       (_output[0]['confidence']).toString(),
+              //                   style: GoogleFonts.questrial(fontSize: 18))
+              //               : Text('')
+              //         ],
+              //       ))
+              // : Container()
             ],
           ),
         ),
