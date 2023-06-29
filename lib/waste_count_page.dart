@@ -32,27 +32,13 @@ class WasteCountPage extends StatelessWidget {
     final categories = ['General', 'Organic', 'Recycle', 'Hazardous'];
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Home();
-                      },
-                    ),
-                  );
-                },
-              ),
-        title: Text('Statistic'),
-      ),
       body: ListView(
         children: <Widget>[
-          Text('User Statistics'),
+          const Text(
+            'User Statistics',
+            style: TextStyle(fontSize: 20),
+          ),
+          const SizedBox(height: 16),
           for (var category in categories)
             FutureBuilder<int>(
               future: getStatsFor(category, userId: userId),
@@ -68,7 +54,12 @@ class WasteCountPage extends StatelessWidget {
                 }
               },
             ),
-          Text('All Users Statistics'),
+          const SizedBox(height: 16),
+          const Text(
+            'All Users Statistics',
+            style: TextStyle(fontSize: 20),
+          ),
+          const SizedBox(height: 16),
           for (var category in categories)
             FutureBuilder<int>(
               future: getStatsFor(category),

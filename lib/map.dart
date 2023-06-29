@@ -36,28 +36,28 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Home();
-                      },
-                    ),
-                  );
-                },
-              ),
-        title: Text('Map'),
-        bottom: TabBar(
-          controller: _controller,
-          tabs: labels.map((String label) => Tab(text: label)).toList(),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.black,
+      //   leading: IconButton(
+      //     icon: Icon(Icons.arrow_back),
+      //     color: Colors.white,
+      //     onPressed: () {
+      //       Navigator.pushReplacement(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) {
+      //             return const Home();
+      //           },
+      //         ),
+      //       );
+      //     },
+      //   ),
+      //   title: const Text('Map'),
+      //   bottom: TabBar(
+      //     controller: _controller,
+      //     tabs: labels.map((String label) => Tab(text: label)).toList(),
+      //   ),
+      // ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('Result').snapshots(),
         builder: (BuildContext context,
@@ -65,49 +65,55 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           if (!snapshot.hasData) return const Text('Loading...');
 
           Map<String, int> provinceData = Map();
+
           snapshot.data!.docs.forEach((doc) {
             String province = doc.get('province');
-            String category = doc.get('category');
-            if (_controller.indexIsChanging &&
-                labels[_controller.previousIndex] == category) {
-              provinceData.update(province, (value) => value + 1,
-                  ifAbsent: () => 1);
-            }
+            // String category = doc.get('category');
+
+            // if (_controller.indexIsChanging &&
+            //     labels[_controller.previousIndex] == category) {
+            provinceData.update(
+              province.substring(10),
+              (value) => value + 1,
+              ifAbsent: () => 1,
+            );
+            // }
           });
 
-          // Find the province with maximum waste
+          // // Find the province with maximum waste
           int maxWaste = provinceData.values.reduce(math.max);
 
-          return TabBarView(
-            controller: _controller,
-            children: colors.map((Color color) {
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SfMaps(
-                  layers: [
-                    MapShapeLayer(
-                      source: MapShapeSource.asset(
-                        'assets/map_th.json',
-                        shapeDataField: 'name',
-                        dataCount: provinceData.length,
-                        primaryValueMapper: (int index) =>
-                            provinceData.keys.elementAt(index),
-                        shapeColorMappers: provinceData.entries.map((e) {
-                          double intensity = e.value / maxWaste;
-                          return MapColorMapper(
-                            value: e.key,
-                            color: color.withOpacity(intensity),
-                          );
-                        }).toList(),
-                      ),
-                      strokeColor: Colors.white,
-                      strokeWidth: 0.5,
-                      showDataLabels: true,
-                    ),
-                  ],
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SfMaps(
+              layers: [
+                MapShapeLayer(
+                  source: MapShapeSource.asset(
+                    'assets/map2.json',
+                    shapeDataField: 'name',
+                    dataCount: provinceData.length,
+                    primaryValueMapper: (int index) =>
+                        provinceData.keys.elementAt(index),
+                    // shapeColorMappers: provinceData.entries.map((e) {
+                    //   double intensity = e.value / maxWaste;
+                    //   return MapColorMapper(
+                    //     value: e.key,
+                    //     color: color.withOpacity(intensity),
+                    //   );
+                    // }).toList(),
+                    shapeColorValueMapper: (index) {
+                      final key = provinceData.keys.elementAt(index);
+                      final scale = provinceData[key]! / maxWaste;
+
+                      return colors[1].withOpacity(scale);
+                    },
+                  ),
+                  strokeColor: Colors.white,
+                  strokeWidth: 0.5,
+                  showDataLabels: true,
                 ),
-              );
-            }).toList(),
+              ],
+            ),
           );
         },
       ),

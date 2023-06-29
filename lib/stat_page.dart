@@ -1,4 +1,3 @@
-import 'package:application_project_1/home.dart';
 import 'package:application_project_1/waste_count_page.dart';
 import 'package:flutter/material.dart';
 
@@ -15,28 +14,24 @@ class StatisticsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return Home();
-                  },
-                ),
-              );
+              Navigator.pop(context);
             },
           ),
-          title: Text('Statistics'),
+          title: const Text('Statistics'),
         ),
-        body: TabBarView(
-          children: [
-            WasteCountPage(),
-            MapPage(),
-          ],
+        body: Container(
+          padding: const EdgeInsets.all(16),
+          child: TabBarView(
+            children: [
+              WasteCountPage(),
+              MapPage(),
+            ],
+          ),
         ),
-        bottomNavigationBar: TabBar(
+        bottomNavigationBar: const TabBar(
           tabs: [
             Tab(
               text: "Waste Count",

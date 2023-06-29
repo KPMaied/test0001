@@ -11,31 +11,27 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    CollectionReference _reportCollection = FirebaseFirestore.instance.collection("Result");
+    CollectionReference _reportCollection =
+        FirebaseFirestore.instance.collection("Result");
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Home();
-                      },
-                    ),
-                  );
-                },
-              ),
-        title: Text(
-          'Result Report'
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+        title: Text('Result Report'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _reportCollection.where('user_id', isEqualTo: uid).where('is_correct', isEqualTo: true).orderBy('date', descending: true).snapshots(),
+        stream: _reportCollection
+            .where('user_id', isEqualTo: uid)
+            .where('is_correct', isEqualTo: true)
+            .orderBy('date', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(

@@ -117,35 +117,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Home();
-                      },
-                    ),
-                  );
-                },
-              ),
-        title: Text('Edit Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text('Edit Profile'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text('Email: ${user?.email ?? "Email not available"}'),
-          ElevatedButton(
-            child: Text('Change Email'),
-            onPressed: _changeEmail,
-          ),
-          ElevatedButton(
-            child: Text('Change Password'),
-            onPressed: _changePassword,
-          ),
-        ],
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text('Email: ${user?.email ?? "Email not available"}'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _changeEmail,
+              child: const Text('Change Email'),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: _changePassword,
+              child: const Text('Change Password'),
+            ),
+          ],
+        ),
       ),
     );
   }

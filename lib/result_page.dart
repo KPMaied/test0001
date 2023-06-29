@@ -1,3 +1,4 @@
+import 'package:application_project_1/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,7 +8,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 
-class ResultPage extends StatelessWidget {
+class ResultPage extends StatefulWidget {
+  final File image;
+  final List output;
+
+  final double predictionDuration;
+
   ResultPage(
       {Key? key,
       required this.image,
@@ -15,12 +21,11 @@ class ResultPage extends StatelessWidget {
       required this.predictionDuration})
       : super(key: key);
 
-  final File image;
-  final List output;
+  @override
+  State<ResultPage> createState() => _ResultPageState();
+}
 
-  final double predictionDuration;
-
-  // Category mapping
+class _ResultPageState extends State<ResultPage> {
   final Map<String, String> categoryMapping = {
     'General': 'General',
     'Organic': 'Organic',
@@ -35,8 +40,9 @@ class ResultPage extends StatelessWidget {
     // Included the province parameter in the method signature
     var uid = FirebaseAuth.instance.currentUser!.uid;
 
-    var res_name =
-        output != null ? output[0]['label'].toString().substring(2) : '';
+    var res_name = widget.output != null
+        ? widget.output[0]['label'].toString().substring(2)
+        : '';
 
     var category = categoryMapping[res_name] ?? 'Unknown'; // Get the category
 
@@ -45,7 +51,7 @@ class ResultPage extends StatelessWidget {
         isCorrect ? "/PredictedImage/Correct" : "/PredictedImage/Incorrect";
     final Reference storageReference =
         FirebaseStorage.instance.ref().child(imagePath).child(uid);
-    final UploadTask uploadTask = storageReference.putFile(image);
+    final UploadTask uploadTask = storageReference.putFile(widget.image);
 
     await uploadTask.whenComplete(
         () => print('Image uploaded to Firebase Storage at $imagePath.'));
@@ -59,7 +65,7 @@ class ResultPage extends StatelessWidget {
       'icRes': res_name,
       'image_url': imageUrl,
       'date': DateTime.now(),
-      'duration': predictionDuration,
+      'duration': widget.predictionDuration,
       'isCorrect': isCorrect,
       'category': category,
       'province': province, // New field for province
@@ -91,11 +97,23 @@ class ResultPage extends StatelessWidget {
       category: FieldValue.increment(1),
       'provinces.$province': FieldValue.increment(1), // New field for province
     }, SetOptions(merge: true));
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return Home();
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
     Future<String?> _getProvince() async {
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return Future.error('Location permissions are denied');
+        }
+      }
+
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
       List<Placemark> placemarks =
@@ -116,14 +134,16 @@ class ResultPage extends StatelessWidget {
               Container(
                 height: 200,
                 width: 200,
-                child: Image.file(image),
+                child: Image.file(widget.image),
               ),
-              output != null
-                  ? Text((output[0]['label']).toString().substring(2),
+              widget.output != null
+                  ? Text((widget.output[0]['label']).toString().substring(2),
                       style: GoogleFonts.questrial(fontSize: 18))
                   : Text(''),
-              output != null
-                  ? Text('Confidence: ' + (output[0]['confidence']).toString(),
+              widget.output != null
+                  ? Text(
+                      'Confidence: ' +
+                          (widget.output[0]['confidence']).toString(),
                       style: GoogleFonts.questrial(fontSize: 18))
                   : Text(''),
               Row(
