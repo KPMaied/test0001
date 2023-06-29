@@ -1,3 +1,4 @@
+import 'package:application_project_1/home.dart';
 import 'package:application_project_1/waste_count_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,21 @@ class StatisticsPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return Home();
+                  },
+                ),
+              );
+            },
+          ),
           title: Text('Statistics'),
         ),
         body: TabBarView(

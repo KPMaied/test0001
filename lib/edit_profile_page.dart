@@ -1,3 +1,4 @@
+import 'package:application_project_1/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -115,8 +116,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
     User? user = _auth.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
         backgroundColor: Colors.black,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Home();
+                      },
+                    ),
+                  );
+                },
+              ),
+        title: Text('Edit Profile'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

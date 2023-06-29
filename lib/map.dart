@@ -1,3 +1,4 @@
+import 'package:application_project_1/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
@@ -36,6 +37,21 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Home();
+                      },
+                    ),
+                  );
+                },
+              ),
         title: Text('Map'),
         bottom: TabBar(
           controller: _controller,

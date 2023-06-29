@@ -1,3 +1,4 @@
+import 'package:application_project_1/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,41 +31,61 @@ class WasteCountPage extends StatelessWidget {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final categories = ['General', 'Organic', 'Recycle', 'Hazardous'];
 
-    return ListView(
-      children: <Widget>[
-        Text('User Statistics'),
-        for (var category in categories)
-          FutureBuilder<int>(
-            future: getStatsFor(category, userId: userId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else {
-                return ListTile(
-                  title: Text(category),
-                  trailing: Text(snapshot.data.toString()),
-                  tileColor: getCategoryColor(category),
-                );
-              }
-            },
-          ),
-        Text('All Users Statistics'),
-        for (var category in categories)
-          FutureBuilder<int>(
-            future: getStatsFor(category),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else {
-                return ListTile(
-                  title: Text(category),
-                  trailing: Text(snapshot.data.toString()),
-                  tileColor: getCategoryColor(category),
-                );
-              }
-            },
-          ),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Home();
+                      },
+                    ),
+                  );
+                },
+              ),
+        title: Text('Statistic'),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Text('User Statistics'),
+          for (var category in categories)
+            FutureBuilder<int>(
+              future: getStatsFor(category, userId: userId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else {
+                  return ListTile(
+                    title: Text(category),
+                    trailing: Text(snapshot.data.toString()),
+                    tileColor: getCategoryColor(category),
+                  );
+                }
+              },
+            ),
+          Text('All Users Statistics'),
+          for (var category in categories)
+            FutureBuilder<int>(
+              future: getStatsFor(category),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else {
+                  return ListTile(
+                    title: Text(category),
+                    trailing: Text(snapshot.data.toString()),
+                    tileColor: getCategoryColor(category),
+                  );
+                }
+              },
+            ),
+        ],
+      ),
     );
   }
 
