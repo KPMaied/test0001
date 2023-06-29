@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:application_project_1/ResultReport.dart';
+// import 'package:application_project_1/ResultReport.dart';
 import 'package:application_project_1/edit_profile_page.dart';
 import 'package:application_project_1/login.dart';
 import 'package:application_project_1/history_page.dart';
 import 'package:application_project_1/result_page.dart';
 import 'package:application_project_1/stat_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool _loading = true;
+  // bool _loading = true;
   File? _image;
   late List _output;
   final imagepicker = ImagePicker();
@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
 
       setState(() {
         _output = prediction!;
-        _loading = false;
+        // _loading = false;
       });
 
       Navigator.pushReplacement(

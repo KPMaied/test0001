@@ -1,6 +1,8 @@
 import 'package:application_project_1/waste_count_page.dart';
 import 'package:flutter/material.dart';
 
+import 'map.dart';
+
 class StatisticsPage extends StatelessWidget {
   const StatisticsPage({Key? key}) : super(key: key);
 
@@ -15,7 +17,7 @@ class StatisticsPage extends StatelessWidget {
         body: TabBarView(
           children: [
             WasteCountPage(),
-            Container(), // You will replace this later with your map page
+            MapPage(),
           ],
         ),
         bottomNavigationBar: TabBar(
