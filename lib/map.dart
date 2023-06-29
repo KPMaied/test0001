@@ -101,6 +101,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     //     color: color.withOpacity(intensity),
                     //   );
                     // }).toList(),
+                    dataLabelMapper: (index) => '',
                     shapeColorValueMapper: (index) {
                       final key = provinceData.keys.elementAt(index);
                       final scale = provinceData[key]! / maxWaste;

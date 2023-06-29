@@ -27,8 +27,7 @@ class _HomeState extends State<Home> {
   final auth = FirebaseAuth.instance;
   bool isModelLoaded = false;
   bool isBusy = false;
-  
-  
+
   void _logout() async {
     await FirebaseAuth.instance.signOut().then((value) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
@@ -36,7 +35,6 @@ class _HomeState extends State<Home> {
       }));
     });
   }
-
 
   @override
   void initState() {
@@ -47,7 +45,7 @@ class _HomeState extends State<Home> {
   loadmodel() async {
     try {
       await Tflite.loadModel(
-        model: 'assets/model_01.tflite',
+        model: 'assets/model_02.tflite',
         labels: 'assets/labels.txt',
       );
       isModelLoaded = true;
@@ -148,13 +146,11 @@ class _HomeState extends State<Home> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return HistoryPage();
                 }));
-              } 
-              else if (value == 'statistics') {
+              } else if (value == 'statistics') {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return StatisticsPage();
                 }));
-              }
-              else if (value == 'logout') {
+              } else if (value == 'logout') {
                 _logout();
               }
             },
