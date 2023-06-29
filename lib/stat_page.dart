@@ -18,10 +18,16 @@ class StatisticsPage extends StatelessWidget {
             Container(), // You will replace this later with your map page
           ],
         ),
-        bottomNavigationBar: TabBar(tabs: [
-          Tab(text: "Waste Count",),
-          Tab(text: "Map",)
-        ]),
+        bottomNavigationBar: TabBar(
+          tabs: [
+            Tab(
+              text: "Waste Count",
+            ),
+            Tab(
+              text: "Map",
+            )
+          ],
+        ),
       ),
     );
   }

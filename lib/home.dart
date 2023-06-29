@@ -4,6 +4,7 @@ import 'package:application_project_1/edit_profile_page.dart';
 import 'package:application_project_1/login.dart';
 import 'package:application_project_1/history_page.dart';
 import 'package:application_project_1/result_page.dart';
+import 'package:application_project_1/stat_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -148,11 +149,11 @@ class _HomeState extends State<Home> {
                   return HistoryPage();
                 }));
               } 
-              // else if (value == 'statistics') {
-              //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //     return StatisticsPage();
-              //   }));
-              // }
+              else if (value == 'statistics') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return StatisticsPage();
+                }));
+              }
               else if (value == 'logout') {
                 _logout();
               }
@@ -172,13 +173,13 @@ class _HomeState extends State<Home> {
                   title: Text('History'),
                 ),
               ),
-              // const PopupMenuItem<String>(
-              //   value: 'statistics',
-              //   child: ListTile(
-              //     leading: Icon(Icons.analytics_outlined),
-              //     title: Text('Statistics'),
-              //   ),
-              // ),
+              const PopupMenuItem<String>(
+                value: 'statistics',
+                child: ListTile(
+                  leading: Icon(Icons.analytics_outlined),
+                  title: Text('Statistics'),
+                ),
+              ),
               const PopupMenuItem<String>(
                 value: 'logout',
                 child: ListTile(
